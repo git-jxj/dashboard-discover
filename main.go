@@ -124,7 +124,9 @@ func NewConfigMapDiscover(restCfg *rest.Config) (cache.Controller, error) {
 				for k, v := range cm.Data {
 					ns := GetNamespace(cm.Namespace, cm.Labels)
 					fileName := BuildFileName(k, ns, "cm")
-					r = UpsertFile(fileName, ns, v)
+					if UpsertFile(fileName, ns, v) {
+						r = true
+					}
 				}
 				if cfg.EnableReload && r {
 					TriggerReload()
@@ -137,7 +139,9 @@ func NewConfigMapDiscover(restCfg *rest.Config) (cache.Controller, error) {
 				for k, v := range cm.Data {
 					ns := GetNamespace(cm.Namespace, cm.Labels)
 					fileName := BuildFileName(k, ns, "cm")
-					r = UpsertFile(fileName, ns, v)
+					if UpsertFile(fileName, ns, v) {
+						r = true
+					}
 				}
 				if cfg.EnableReload && r {
 					TriggerReload()
