@@ -185,16 +185,20 @@ func TriggerReload() {
 	req, err := http.NewRequest("POST", cfg.RequestReloadURL, nil)
 	if err != nil {
 		zap.S().Error(err)
+		return
 	}
 
 	req.SetBasicAuth(cfg.RequestUser, cfg.RequestPassword)
 	resp, err := client.Do(req)
 	if err != nil {
 		zap.S().Errorf("failed to trigger reload request: %v", err)
+		return
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		zap.S().Errorf("failed to trigger reload request: %v", resp.Status)
+		return
 	}
 
 	zap.S().Infof("reload triggered")
